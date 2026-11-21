@@ -1,0 +1,129 @@
+.groupdeck-panel {
+  background: rgba(20, 20, 25, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.groupdeck-header {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.groupdeck-refresh {
+  background: rgba(255,255,255,0.05);
+  border: none;
+  border-radius: 4px;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  transition: all 0.2s;
+}
+.groupdeck-refresh:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+
+.groupdeck-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* 行之间的间距 */
+}
+
+.groupdeck-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: all 0.2s ease;
+}
+
+.groupdeck-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.groupdeck-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.groupdeck-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* 开关按钮 - 胶囊形状 */
+.groupdeck-toggle {
+  background: #334155;
+  color: #94a3b8;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 52px;
+}
+
+.groupdeck-toggle.on {
+  background: linear-gradient(135deg, #a855f7, #7e22ce);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.4);
+}
+
+.groupdeck-toggle:not(.on) {
+  background: linear-gradient(135deg, #10b981, #047857); /* 正常状态为绿色 */
+  color: #fff;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+/* 播放按钮 - 圆形质感 */
+.groupdeck-run {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding-left: 2px; /* 视觉居中微调 */
+}
+
+.groupdeck-run:hover {
+  background: #3b82f6; /* 蓝色悬停 */
+  border-color: #60a5fa;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+  transform: scale(1.1);
+}

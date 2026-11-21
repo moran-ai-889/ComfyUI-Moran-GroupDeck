@@ -1,0 +1,14 @@
+[project]
+name = "ComfyUI-Moran-GroupDeck"
+description = "★ 墨染组控台：专为复杂工作流打造的多面板独立分组与后台运行调度中心。"
+version = "1.0.0"
+license = { text = "MIT" }
+authors = [
+    { name = "墨染" }
+]
+dependencies = []
+
+[tool.comfy]
+PublisherId = "Moran"
+DisplayName = "★ 墨染组控台"
+Icon = ""
