@@ -14,10 +14,12 @@ style.textContent = `
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     font-family: sans-serif;
-    height: fit-content !important; 
-    min-height: auto !important;
+    /* 【核心修复】取消原本的 fit-content，让它死死填满节点外框 */
+    width: 100%;
+    height: 100% !important; 
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    position: relative;
   }
   .gd-header {
     display: flex !important; 
@@ -25,30 +27,26 @@ style.textContent = `
     align-items: center;
     margin-bottom: 6px; padding-bottom: 6px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0; /* 防止头部被挤压 */
   }
-  
-  /* 墨染专属品牌 Logo 样式 */
   .gd-brand {
-    font-size: 15px;
-    font-weight: 900;
-    letter-spacing: 2px;
+    font-size: 15px; font-weight: 900; letter-spacing: 2px;
     font-family: "STZhongsong", "SimSun", "Microsoft YaHei", serif;
     background: linear-gradient(135deg, #e2e8f0 0%, #64748b 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 10px rgba(255,255,255,0.05);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     user-select: none;
   }
-  .gd-brand small {
-    font-size: 10px; font-weight: normal; color: #555;
-    letter-spacing: 1px; margin-left: 4px; -webkit-text-fill-color: #666;
-  }
-
+  .gd-brand small { font-size: 10px; font-weight: normal; color: #555; letter-spacing: 1px; margin-left: 4px; -webkit-text-fill-color: #666; }
   .gd-header-actions { display: flex; gap: 8px; }
   .gd-icon-btn { cursor: pointer; color: #aaa; font-size: 14px; padding: 2px; transition: color 0.2s; }
   .gd-icon-btn:hover { color: #fff; }
   
-  .gd-rows { overflow-y: auto; max-height: 280px; padding-right: 4px; }
+  .gd-rows { 
+    flex: 1; /* 【核心修复】让内容区自动撑满剩余空间 */
+    overflow-y: auto; 
+    padding-right: 4px;
+    min-height: 0; /* 保证 flex 子元素能正常滚动 */
+  }
   .gd-rows::-webkit-scrollbar { width: 6px; }
   .gd-rows::-webkit-scrollbar-track { background: transparent; }
   .gd-rows::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
@@ -59,6 +57,7 @@ style.textContent = `
     align-items: center !important; justify-content: space-between !important;
     padding: 6px 8px; background: rgba(255, 255, 255, 0.03);
     border-radius: 6px; margin-bottom: 6px; transition: background 0.2s;
+    flex-shrink: 0; /* 防止行被挤压 */
   }
   .gd-row:hover { background: rgba(255, 255, 255, 0.08); }
   
@@ -69,10 +68,11 @@ style.textContent = `
   
   .gd-actions { display: flex !important; flex-direction: row !important; align-items: center; gap: 6px; }
   
-  /* 优化：更宽的耗时显示区 */
+  /* 【核心修复】加宽时间显示区域，并强制不换行 */
   .gd-time {
     font-size: 11px; color: #fbbf24; font-family: monospace;
-    width: 55px; text-align: right; margin-right: 2px; opacity: 0.9;
+    width: 72px; text-align: right; margin-right: 2px; opacity: 0.9;
+    white-space: nowrap; /* 强制单行显示 */
   }
 
   .gd-toggle {
@@ -91,7 +91,6 @@ style.textContent = `
   }
   .gd-run { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
   .gd-run:hover { background: rgba(59, 130, 246, 0.3); color: #fff; }
-  
   .gd-remove { background: transparent; color: #666; border: 1px solid transparent; }
   .gd-remove:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
 
@@ -140,7 +139,6 @@ function broadcastRefresh() {
   window.dispatchEvent(new CustomEvent("groupdeck-refresh"));
 }
 
-// 耗时格式化工具：将秒数转为易读格式
 function formatDuration(sec) {
   const s = parseFloat(sec);
   if (s < 60) return `总:${s.toFixed(1)}s`;
@@ -177,7 +175,7 @@ async function runSingleGroup(targetGroup, nodeInstance) {
 
     if (recordTime) {
       const endTime = performance.now();
-      const duration = ((endTime - startTime) / 1000); // 保留原始秒数进行格式化
+      const duration = ((endTime - startTime) / 1000); 
       if (!nodeInstance.properties.groupTimes) nodeInstance.properties.groupTimes = {};
       nodeInstance.properties.groupTimes[targetGroup.title] = duration;
     }
@@ -230,23 +228,6 @@ app.registerExtension({
 
     const container = document.createElement("div");
     container.className = "gd-panel";
-    container.style.width = "100%";
-
-    const resizeNodeToFit = () => {
-      const rows = container.querySelectorAll(".gd-row");
-      const idealContentHeight = 35 + (rows.length * 36);
-      const maxContentHeight = 300; 
-      const contentHeight = Math.min(idealContentHeight, maxContentHeight);
-      
-      container.style.height = contentHeight + "px";
-      const nodeHeight = contentHeight + 40; 
-      
-      if (node.size[1] !== nodeHeight) node.setSize([Math.max(node.size[0], 400), nodeHeight]);
-      
-      const domWidget = node.widgets.find(w => w.name === "groupdeck_panel");
-      if (domWidget) domWidget.computeSize = () => [Math.max(node.size[0] - 20, 360), contentHeight];
-      app.graph.setDirtyCanvas(true, true);
-    };
 
     const renderPanel = () => {
       const allGroups = app.graph._groups || [];
@@ -283,7 +264,7 @@ app.registerExtension({
           if (node._isRunning && node._runningGroupTitle === g.title) {
             timeStr = "⏳";
           } else if (node.properties.groupTimes[g.title]) {
-            timeStr = formatDuration(node.properties.groupTimes[g.title]); // 使用格式化函数
+            timeStr = formatDuration(node.properties.groupTimes[g.title]); 
           }
 
           html += `
@@ -367,7 +348,11 @@ app.registerExtension({
         });
       });
 
-      setTimeout(resizeNodeToFit, 10);
+      // 渲染完成后，通知 DOM widget 刷新尺寸
+      if (node.widgets) {
+        const dw = node.widgets.find(w => w.name === "groupdeck_panel");
+        if (dw && dw.computeSize) dw.computeSize = () => [node.size[0], node.size[1]];
+      }
     };
 
     window.addEventListener("groupdeck-refresh", renderPanel);
@@ -376,12 +361,18 @@ app.registerExtension({
     node.onConfigure = function() { setTimeout(() => renderPanel(), 300); };
 
     try {
-      const widget = node.addDOMWidget("groupdeck_panel", "groupdeck_panel", container, { serialize: false });
-      widget.computeSize = () => [360, 200];
+      const widget = node.addDOMWidget("groupdeck_panel", "groupdeck_panel", container, {
+        serialize: false,
+        // 【核心修复】让 DOM 元素与节点大小完美同步拉伸
+        computeSize: (width) => {
+          return [width, node.size[1]]; 
+        }
+      });
     } catch (e) {
       console.error("[墨染 GroupDeck] DOM 挂载失败:", e);
     }
     
-    node.setSize([400, 240]);
+    // 设定初始大小
+    node.setSize([420, 260]);
   }
 });
