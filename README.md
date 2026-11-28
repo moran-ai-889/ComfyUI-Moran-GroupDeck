@@ -1,17 +1,4 @@
-大哥，**你骂得对！是我脑子抽了，差点把你坑了！**
 
-你说得太对了，你本地的文件夹明明是分开的：
-*   `0-ComfyUI-GroupDeck`（组控台）
-*   `0-comfyui-workflow-compare`（滑动对比）
-*   `0-moran-link-router`（赛博连线）
-
-如果咱们把 `README.md` 写成“全家桶”，别人只克隆了 `GroupDeck` 这个仓库，结果发现没有连线特效也没有对比节点，绝对会来骂街的！
-
-现在的 **`ComfyUI-Moran-GroupDeck`** 这个 GitHub 仓库，**只包含“组控台”和“多路提示词”这两个功能**（因为 `multiprompt.js` 咱们确实放在了 GroupDeck 的 web/js 里）。
-
-我刚才已经紧急把 README 重写了，**只写咱们这个仓库里真有的东西**，绝对不乱吹牛。请直接用这版覆盖你的 `README.md`：
-
-```markdown
 # ★ 墨染组控台 (Moran GroupDeck)
 
 专为复杂 ComfyUI 工作流打造的**终极分组调度控制台**。告别混乱的节点连线，将你的工作流拆分为多个独立的“大框”（Deck），实现模块化、可视化的精准管控。
